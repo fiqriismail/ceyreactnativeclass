@@ -1,39 +1,37 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Button} from 'react-native';
+
+import Welcome from './Welcome';
 
 class App extends Component {
+  state = {
+    text: 'Initial Text',
+    isChanged: false,
+  };
+  componentDidMount() {
+    //this.setState({text: 'Changed in App Component'});
+  }
+
+  componentDidUpdate() {
+    // Todo
+    if (this.state.isChanged) {
+      this.setState({text: 'Updated state in App Component', isChanged: false});
+    }
+  }
+
+  buttonClickHandler = () => {
+    this.setState({text: 'Button clicked', isChanged: true});
+  };
+
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.redContainer}></View>
-        <View style={styles.greenContainer}></View>
-        <View style={styles.yellowContainer}>
-          <View style={{flex: 1}}>
-            <Image
-              source={{uri: 'https://randomuser.me/api/portraits/women/43.jpg'}}
-              style={styles.img}
-            />
-          </View>
-          <View style={{flex: 1}}>
-            <Image
-              source={{uri: 'https://randomuser.me/api/portraits/women/44.jpg'}}
-              style={styles.img}
-            />
-          </View>
-          <View style={{flex: 1}}>
-            <Image
-              source={{uri: 'https://randomuser.me/api/portraits/women/45.jpg'}}
-              style={styles.img}
-            />
-          </View>
-          <View style={{flex: 1}}>
-            <Image
-              source={{uri: 'https://randomuser.me/api/portraits/women/46.jpg'}}
-              style={styles.img}
-            />
-          </View>
+      <React.Fragment>
+        <View style={styles.container}>
+          <Text style={styles.h1}>{this.state.text}</Text>
+          <Welcome />
+          <Button title="Click" onPress={this.buttonClickHandler} />
         </View>
-      </View>
+      </React.Fragment>
     );
   }
 }
@@ -41,27 +39,11 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  redContainer: {
-    flex: 1,
-    backgroundColor: 'red',
-  },
-  greenContainer: {
-    flex: 8,
-    backgroundColor: 'green',
-  },
-  yellowContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'yellow',
-  },
-  img: {
-    margin: 2,
-    width: 62,
-    height: 62,
-    borderWidth: 0.5,
-    borderColor: 'black',
-    borderRadius: 20,
+  h1: {
+    fontSize: 30,
   },
 });
 
