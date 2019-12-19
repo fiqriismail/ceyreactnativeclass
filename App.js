@@ -1,37 +1,57 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
-
-import Welcome from './Welcome';
+import {View, Text, StyleSheet, Button, Image} from 'react-native';
+import axios from 'axios';
 
 class App extends Component {
   state = {
-    text: 'Initial Text',
-    isChanged: false,
+    data: '',
   };
-  componentDidMount() {
-    //this.setState({text: 'Changed in App Component'});
-  }
 
-  componentDidUpdate() {
-    // Todo
-    if (this.state.isChanged) {
-      this.setState({text: 'Updated state in App Component', isChanged: false});
+  loadNameHandler = () => {
+    axios.get('https://randomuser.me/api/').then(res => {
+      this.setState({data: res.data.results[0]});
+    });
+  };
+
+  displayData = () => {
+    if (this.state.data !== '') {
+      const name = this.state.data.name;
+      return `${name.title} ${name.first} ${name.last}`;
     }
-  }
+    return '';
+  };
 
-  buttonClickHandler = () => {
-    this.setState({text: 'Button clicked', isChanged: true});
+  displayImage = () => {
+    if (this.state.data !== '') {
+      const picture = this.state.data.picture;
+      return picture.medium;
+    }
+    return 'https://randomuser.me/api/portraits/med/men/26.jpg';
   };
 
   render() {
     return (
-      <React.Fragment>
-        <View style={styles.container}>
-          <Text style={styles.h1}>{this.state.text}</Text>
-          <Welcome />
-          <Button title="Click" onPress={this.buttonClickHandler} />
+      <View style={styles.container}>
+        <View style={styles.nav}>
+          <View style={styles.label}>
+            <Text style={{fontSize: 20, color: 'white'}}>Load Information</Text>
+          </View>
+          <View style={styles.btn}>
+            <Button title="Get Data" onPress={this.loadNameHandler} />
+          </View>
         </View>
-      </React.Fragment>
+        <View style={styles.result}>
+          <View style={styles.card}>
+            <Image
+              source={{
+                uri: this.displayImage(),
+              }}
+              style={styles.img}
+            />
+            <Text style={{fontSize: 18}}>{this.displayData()}</Text>
+          </View>
+        </View>
+      </View>
     );
   }
 }
@@ -39,11 +59,36 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  nav: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'green',
+    padding: 10,
+  },
+  label: {
+    justifyContent: 'center',
+    flex: 4,
+  },
+  btn: {
+    justifyContent: 'center',
+    flex: 1,
+  },
+  result: {
+    flex: 8,
+    backgroundColor: 'black',
+  },
+  card: {
+    flex: 1,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  h1: {
-    fontSize: 30,
+  img: {
+    borderWidth: 1,
+    borderColor: 'black',
+    width: 250,
+    height: 250,
   },
 });
 
